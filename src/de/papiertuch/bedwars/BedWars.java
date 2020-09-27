@@ -76,11 +76,9 @@ public class BedWars extends JavaPlugin {
     private HashMap<String, ArrayList<UUID>> maps;
     private HashMap<String, List<Location>> blocks;
 
-
     private boolean boarder, gold, nickEnable, forceMap, itemDrop;
 
     private String map, newVersion;
-
 
     @Override
     public void onEnable() {
