@@ -4,13 +4,13 @@ import de.papiertuch.bedwars.BedWars;
 import de.papiertuch.bedwars.api.events.GameEndingEvent;
 import de.papiertuch.bedwars.enums.GameState;
 import de.papiertuch.nickaddon.NickAddon;
-import de.papiertuch.nickaddon.utils.NickAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import xyz.haoshoku.nick.api.NickAPI;
 
 /**
  * Created by Leon on 14.06.2019.
@@ -33,8 +33,8 @@ public class Ending {
             BedWars.getInstance().getBoard().updateBoard();
             for (Player a : Bukkit.getOnlinePlayers()) {
                 if (Bukkit.getPluginManager().getPlugin("NickAddon") != null) {
-                    if (NickAddon.getInstance().getNickPlayers().contains(a.getUniqueId())) {
-                        new NickAPI(a).setNick(a.getUniqueId(), false);
+                    if (NickAPI.isNicked(a)) {
+                        NickAddon.getInstance().getApi().setNick(a, false);
                     }
                 }
                 xp = (((float) 1 / 60) * seconds);

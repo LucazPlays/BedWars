@@ -4,7 +4,7 @@ import de.dytanic.cloudnet.bridge.CloudServer;
 import de.dytanic.cloudnet.ext.bridge.bukkit.BukkitCloudNetHelper;
 import de.papiertuch.bedwars.BedWars;
 import de.papiertuch.bedwars.enums.GameState;
-import de.papiertuch.nickaddon.utils.NickAPI;
+import de.papiertuch.nickaddon.NickAddon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,8 +35,8 @@ public class PlayerJoinListener implements Listener {
                 }
             }
             if (BedWars.getInstance().isNickEnable()) {
-                if (new NickAPI(player).getAutoNickState(player.getUniqueId())) {
-                    new NickAPI(player).setNick(player.getUniqueId(), true);
+                if (NickAddon.getInstance().getApi().getAutoNickState(player)) {
+                    NickAddon.getInstance().getApi().setNick(player, true);
                 }
             }
             BedWars.getInstance().getStatsHandler().createPlayer(player);

@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import xyz.haoshoku.nick.api.NickAPI;
 
 import java.text.SimpleDateFormat;
 
@@ -188,7 +189,7 @@ public class Board {
             initScoreboard(all);
             if (playerPermissionGroup != null)
                 if (BedWars.getInstance().isNickEnable()) {
-                    if (NickAddon.getInstance().getNickPlayers().contains(player.getUniqueId())) {
+                    if (NickAPI.isNicked(player)) {
                         addTeamEntry(player, all, BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1));
                     } else {
                         addTeamEntry(player, all, playerPermissionGroup);
@@ -207,14 +208,14 @@ public class Board {
     private void addTeamEntry(Player target, Player all, TabListGroup permissionGroup) {
         Team team;
         if (BedWars.getInstance().isNickEnable()) {
-            if (NickAddon.getInstance().getNickPlayers().contains(target.getUniqueId())) {
+            if (NickAPI.isNicked(target)) {
                 TabListGroup tabListGroup = BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
                 team = all.getScoreboard().getTeam(tabListGroup.getTagId() + tabListGroup.getName());
             } else {
                 team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
             }
             if (team == null) {
-                if (NickAddon.getInstance().getNickPlayers().contains(target.getUniqueId())) {
+                if (NickAPI.isNicked(target)) {
                     TabListGroup tabListGroup = BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
                     team = all.getScoreboard().registerNewTeam(tabListGroup.getTagId() + tabListGroup.getName());
                 } else {
@@ -225,7 +226,7 @@ public class Board {
                 if (team == null)
                     team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
             }
-            if (NickAddon.getInstance().getNickPlayers().contains(target.getUniqueId())) {
+            if (NickAPI.isNicked(target)) {
                 TabListGroup tabListGroup = BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
                 team.setPrefix(ChatColor.translateAlternateColorCodes('&', tabListGroup.getPrefix()));
                 team.setSuffix(ChatColor.translateAlternateColorCodes('&', tabListGroup.getSuffix()));
