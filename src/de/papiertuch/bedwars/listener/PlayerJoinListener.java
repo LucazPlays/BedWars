@@ -68,28 +68,30 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onLoginEvent(PlayerLoginEvent event) {
         if (BedWars.getInstance().getGameState() == GameState.LOBBY) {
-            Player player = event.getPlayer();
-            int i = getMaxPlayers();
-            if (Bukkit.getOnlinePlayers().size() != i) {
-                return;
-            }
-            if (!player.hasPermission("bedwars.premium")) {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu benötigst mindestens den §6§lPremium §cRang, um diesen Server betreten zu können!");
-                return;
-            }
-            List<Player> list = new ArrayList<>();
-            for (Player other : Bukkit.getOnlinePlayers()) {
-                if (!other.hasPermission("bedwars.premium")) {
-                    list.add(other);
+            if (BedWars.getInstance().getBedWarsConfig().getBoolean("settings.premiumKick.permission")) {
+                Player player = event.getPlayer();
+                int i = getMaxPlayers();
+                if (Bukkit.getOnlinePlayers().size() != i) {
+                    return;
                 }
-            }
-            if (list.isEmpty()) {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDieser Server ist komplett voll. Jeder hat mindestenes einen §6§lPremium §cRang!");
-            }
+                if (!player.hasPermission(BedWars.getInstance().getBedWarsConfig().getString("settings.premiumKick.permission"))) {
+                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, BedWars.getInstance().getBedWarsConfig().getString("message.premiumKick.full"));
+                    return;
+                }
+                List<Player> list = new ArrayList<>();
+                for (Player other : Bukkit.getOnlinePlayers()) {
+                    if (!other.hasPermission(BedWars.getInstance().getBedWarsConfig().getString("settings.premiumKick.permission"))) {
+                        list.add(other);
+                    }
+                }
+                if (list.isEmpty()) {
+                    event.disallow(PlayerLoginEvent.Result.KICK_OTHER, BedWars.getInstance().getBedWarsConfig().getString("message.premiumKick.fullPremium"));
+                }
 
-            Player random = list.get(new Random().nextInt(list.size()));
-            random.kickPlayer(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu wurdest von einem §e§lhöherrängigen §cSpieler gekickt!");
-            event.allow();
+                Player random = list.get(new Random().nextInt(list.size()));
+                random.kickPlayer(BedWars.getInstance().getBedWarsConfig().getString("message.premiumKick.kickPlayer"));
+                event.allow();
+            }
         }
         if (BedWars.getInstance().getGameState() == GameState.ENDING) {
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);

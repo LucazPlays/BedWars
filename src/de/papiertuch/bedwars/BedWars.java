@@ -241,14 +241,14 @@ public class BedWars extends JavaPlugin {
         }
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://daspapiertuch.de/check/bedWars.php").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://papiertu.ch/check/bedWars.php").openConnection();
             connection.setRequestProperty("User-Agent", this.getDescription().getVersion());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             newVersion = bufferedReader.readLine();
             if (newVersion.equalsIgnoreCase("false")) {
                 getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDu hast eine Version die deaktiviert wurde");
                 getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cLade dir bitte die neuste Version runter");
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §bDiscord https://daspapiertuch.de/discord/ oder Papiertuch#7836");
+                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §bDiscord https://papiertu.ch/go/discord/ oder Papiertuch#7836");
                 getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
                 getServer().getPluginManager().disablePlugin(this);
             } else if (!newVersion.equalsIgnoreCase(BedWars.getInstance().getDescription().getVersion())) {

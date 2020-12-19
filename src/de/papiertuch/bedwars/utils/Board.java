@@ -51,8 +51,8 @@ public class Board {
 
         map.setPrefix(addPlaceHolders(player, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line3.input"))
                 .replace("%map%", ""));
-        map.setSuffix("§e" + BedWars.getInstance().getMap());
-        map.addEntry(" §c");
+        map.setSuffix(BedWars.getInstance().getMap());
+        map.addEntry("");
 
         for (BedWarsTeam team : BedWars.getInstance().getBedWarsTeams()) {
             Team score = board.registerNewTeam(team.getName());
@@ -94,7 +94,7 @@ public class Board {
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName(getTitle());
         if (BedWars.getInstance().getGameState() == GameState.LOBBY) {
-            obj.getScore("").setScore(9);
+            obj.getScore("     ").setScore(9);
             obj.getScore(BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line1.title")).setScore(8);
             obj.getScore(" §e").setScore(7);
             obj.getScore("  ").setScore(6);
@@ -102,10 +102,10 @@ public class Board {
             obj.getScore(" §b").setScore(4);
             obj.getScore("   ").setScore(3);
             obj.getScore(addPlaceHolders(player, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line3.title"))).setScore(2);
-            obj.getScore(" §c").setScore(1);
+            obj.getScore("").setScore(1);
             obj.getScore("    ").setScore(0);
         } else if (BedWars.getInstance().getGameState() == GameState.INGAME) {
-            obj.getScore("").setScore(9);
+            obj.getScore("      ").setScore(9);
             obj.getScore(addPlaceHolders(player, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line4.title"))).setScore(8);
             if (BedWars.getInstance().getPlayers().contains(player.getUniqueId())) {
                 obj.getScore(addPlaceHolders(player, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line4.input"))
@@ -124,13 +124,13 @@ public class Board {
             obj.getScore("   ").setScore(i - 1);
 
         } else {
-            obj.getScore("").setScore(6);
+            obj.getScore("       ").setScore(6);
             obj.getScore(addPlaceHolders(player, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line1.title"))).setScore(5);
             obj.getScore(" §e").setScore(4);
             obj.getScore(" ").setScore(3);
             obj.getScore(addPlaceHolders(player, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line3.title"))
                     .replace("%map%", BedWars.getInstance().getMap())).setScore(2);
-            obj.getScore(" §c").setScore(1);
+            obj.getScore("").setScore(1);
             obj.getScore("   ").setScore(0);
         }
         player.setScoreboard(board);
@@ -141,7 +141,7 @@ public class Board {
             a.getScoreboard().getObjective("lobby").setDisplayName(getTitle());
             a.getScoreboard().getTeam("map").setPrefix(addPlaceHolders(a, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line3.input"))
                     .replace("%map%", ""));
-            a.getScoreboard().getTeam("map").setSuffix("§e" + BedWars.getInstance().getMap());
+            a.getScoreboard().getTeam("map").setSuffix(BedWars.getInstance().getMap());
             a.getScoreboard().getTeam("players").setPrefix(addPlaceHolders(a, BedWars.getInstance().getBedWarsConfig().getString("scoreboard.line1.input"))
                     .replace("%players%", String.valueOf(Bukkit.getOnlinePlayers().size())));
             if (BedWars.getInstance().getGameState() == GameState.INGAME) {

@@ -43,12 +43,7 @@ public class EntityDamageByEntityListener implements Listener {
                 event.setCancelled(true);
             } else {
                 BedWars.getInstance().getLastHit().put(player, damager);
-                Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        BedWars.getInstance().getLastHit().remove(player);
-                    }
-                }, 20 * 10);
+                Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> BedWars.getInstance().getLastHit().remove(player), 20 * 10);
             }
         } catch (Exception ignored) {
         }

@@ -183,25 +183,21 @@ public class PlayerInteractListener implements Listener {
                 if (player.getLocation().subtract(0.0, 3.0, 0.0).getBlock().getType() == Material.AIR) {
                     player.getLocation().subtract(0.0, 3.0, 0.0).getBlock().setType(Material.SLIME_BLOCK);
                 }
-                Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (loc.getBlock().getType() == Material.SLIME_BLOCK) {
-                            loc.getBlock().setType(Material.AIR);
-                        }
-                        if (loc2.getBlock().getType() == Material.SLIME_BLOCK) {
-                            loc2.getBlock().setType(Material.AIR);
-                        }
-                        if (loc3.getBlock().getType() == Material.SLIME_BLOCK) {
-                            loc3.getBlock().setType(Material.AIR);
-                        }
-                        if (loc4.getBlock().getType() == Material.SLIME_BLOCK) {
-                            loc4.getBlock().setType(Material.AIR);
-                        }
-                        if (loc5.getBlock().getType() == Material.SLIME_BLOCK) {
-                            loc5.getBlock().setType(Material.AIR);
-                        }
+                Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> {
+                    if (loc.getBlock().getType() == Material.SLIME_BLOCK) {
+                        loc.getBlock().setType(Material.AIR);
+                    }
+                    if (loc2.getBlock().getType() == Material.SLIME_BLOCK) {
+                        loc2.getBlock().setType(Material.AIR);
+                    }
+                    if (loc3.getBlock().getType() == Material.SLIME_BLOCK) {
+                        loc3.getBlock().setType(Material.AIR);
+                    }
+                    if (loc4.getBlock().getType() == Material.SLIME_BLOCK) {
+                        loc4.getBlock().setType(Material.AIR);
+                    }
+                    if (loc5.getBlock().getType() == Material.SLIME_BLOCK) {
+                        loc5.getBlock().setType(Material.AIR);
                     }
                 }, 20 * 5);
             }
@@ -233,59 +229,51 @@ public class PlayerInteractListener implements Listener {
                             noMove.remove(player);
                             player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu darfst dich nicht bewegen!");
                         }
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), new Runnable() {
-                            public void run() {
-                                if (player.getLocation().getBlockX() != loc.getBlockX() || player.getLocation().getBlockY() != loc.getBlockY() || player.getLocation().getBlockZ() != loc.getBlockZ()) {
-                                    noMove.remove(player);
-                                    player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu darfst dich nicht bewegen!");
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), () -> {
+                            if (player.getLocation().getBlockX() != loc.getBlockX() || player.getLocation().getBlockY() != loc.getBlockY() || player.getLocation().getBlockZ() != loc.getBlockZ()) {
+                                noMove.remove(player);
+                                player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu darfst dich nicht bewegen!");
+                            }
+                            if (noMove.contains(player)) {
+                                player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
+                                player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §7Du wirst in §a§l3 §7Sekunden teleportiert");
+                                for (Player all : Bukkit.getOnlinePlayers()) {
+                                    all.playEffect(player.getLocation(), Effect.ENDER_SIGNAL, 1);
                                 }
-                                if (noMove.contains(player)) {
-                                    player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
-                                    player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §7Du wirst in §a§l3 §7Sekunden teleportiert");
-                                    for (Player all : Bukkit.getOnlinePlayers()) {
-                                        all.playEffect(player.getLocation(), Effect.ENDER_SIGNAL, 1);
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), () -> {
+                                    if (player.getLocation().getBlockX() != loc.getBlockX() || player.getLocation().getBlockY() != loc.getBlockY() || player.getLocation().getBlockZ() != loc.getBlockZ()) {
+                                        noMove.remove(player);
+                                        player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu darfst dich nicht bewegen!");
                                     }
-                                    Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), new Runnable() {
-                                        public void run() {
+                                    if (noMove.contains(player)) {
+                                        player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
+                                        player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §7Du wirst in §a§l2 §7Sekunden teleportiert");
+                                        for (Player all : Bukkit.getOnlinePlayers()) {
+                                            all.playEffect(player.getLocation(), Effect.ENDER_SIGNAL, 1);
+                                        }
+                                        Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), () -> {
                                             if (player.getLocation().getBlockX() != loc.getBlockX() || player.getLocation().getBlockY() != loc.getBlockY() || player.getLocation().getBlockZ() != loc.getBlockZ()) {
                                                 noMove.remove(player);
                                                 player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu darfst dich nicht bewegen!");
                                             }
                                             if (noMove.contains(player)) {
                                                 player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
-                                                player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §7Du wirst in §a§l2 §7Sekunden teleportiert");
+                                                player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §7Du wirst in §a§leiner §7Sekunde teleportiert");
                                                 for (Player all : Bukkit.getOnlinePlayers()) {
                                                     all.playEffect(player.getLocation(), Effect.ENDER_SIGNAL, 1);
                                                 }
-                                                Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), new Runnable() {
-                                                    public void run() {
-                                                        if (player.getLocation().getBlockX() != loc.getBlockX() || player.getLocation().getBlockY() != loc.getBlockY() || player.getLocation().getBlockZ() != loc.getBlockZ()) {
-                                                            noMove.remove(player);
-                                                            player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDu darfst dich nicht bewegen!");
-                                                        }
-                                                        if (noMove.contains(player)) {
-                                                            player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
-                                                            player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §7Du wirst in §a§leiner §7Sekunde teleportiert");
-                                                            for (Player all : Bukkit.getOnlinePlayers()) {
-                                                                all.playEffect(player.getLocation(), Effect.ENDER_SIGNAL, 1);
-                                                            }
-                                                            Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), new Runnable() {
-                                                                public void run() {
-                                                                    BedWars.getInstance().getGameHandler().teleportToMap(player);
-                                                                    noMove.remove(player);
-                                                                    player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
-                                                                    BedWars.getInstance().getShopHandler().removeItems(player, Material.FIREWORK, 1);
-                                                                    player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §aDu wurdest nach Hause teleportiert");
-                                                                    player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound("ENDERMAN_TELEPORT"), 10F, 10F);
-                                                                }
-                                                            }, 20L);
-                                                        }
-                                                    }
+                                                Bukkit.getScheduler().scheduleSyncDelayedTask(BedWars.getInstance(), () -> {
+                                                    BedWars.getInstance().getGameHandler().teleportToMap(player);
+                                                    noMove.remove(player);
+                                                    player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.countdown")), 1, 1);
+                                                    BedWars.getInstance().getShopHandler().removeItems(player, Material.FIREWORK, 1);
+                                                    player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §aDu wurdest nach Hause teleportiert");
+                                                    player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound("ENDERMAN_TELEPORT"), 10F, 10F);
                                                 }, 20L);
                                             }
-                                        }
-                                    }, 20L);
-                                }
+                                        }, 20L);
+                                    }
+                                }, 20L);
                             }
                         }, 20L);
                     }
@@ -296,17 +284,13 @@ public class PlayerInteractListener implements Listener {
                 BedWars.getInstance().getShopHandler().removeItems(player, Material.EGG, 1);
                 Chicken ch = (Chicken) player.getWorld().spawnEntity(player.getLocation(), EntityType.CHICKEN);
                 player.setPassenger(ch);
-                scheduler.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(BedWars.getInstance(), new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (player.getPassenger() != null && player.getPassenger().getType() == EntityType.CHICKEN) {
-                            player.setVelocity(new Vector(player.getLocation().getDirection().getX() * 0.5, player.getVelocity().getY() * 0.3, player.getLocation().getDirection().getZ() * 0.5));
-                            player.setFallDistance(0.0f);
-                            if (player.isOnGround()) {
-                                player.getPassenger().remove();
-                                Bukkit.getScheduler().cancelTask(scheduler.get(player));
-                            }
+                scheduler.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(BedWars.getInstance(), () -> {
+                    if (player.getPassenger() != null && player.getPassenger().getType() == EntityType.CHICKEN) {
+                        player.setVelocity(new Vector(player.getLocation().getDirection().getX() * 0.5, player.getVelocity().getY() * 0.3, player.getLocation().getDirection().getZ() * 0.5));
+                        player.setFallDistance(0.0f);
+                        if (player.isOnGround()) {
+                            player.getPassenger().remove();
+                            Bukkit.getScheduler().cancelTask(scheduler.get(player));
                         }
                     }
                 }, 5, 5));

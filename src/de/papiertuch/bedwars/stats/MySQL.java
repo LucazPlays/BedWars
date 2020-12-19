@@ -20,7 +20,8 @@ public class MySQL {
     public void connect() {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + BedWars.getInstance().getBedWarsConfig().getString("settings.mysql.host")
-                    + ":3306/" + BedWars.getInstance().getBedWarsConfig().getString("settings.mysql.dataBase") + "?autoReconnect=true",
+                            + ":" + BedWars.getInstance().getBedWarsConfig().getInt("settings.mysql.port") +
+                            "/" + BedWars.getInstance().getBedWarsConfig().getString("settings.mysql.dataBase") + "?autoReconnect=true",
                     BedWars.getInstance().getBedWarsConfig().getString("settings.mysql.user"),
                     BedWars.getInstance().getBedWarsConfig().getConfiguration().getString("settings.mysql.password"));
             Bukkit.getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aEine Verbindung zum MySQl-Server war erfolgreich");
@@ -28,12 +29,7 @@ public class MySQL {
         } catch (Exception e) {
             Bukkit.getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDie Verbindung zum MySQL-Server ist fehlgeschlagen");
         }
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(BedWars.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                update("CREATE TABLE IF NOT EXISTS bedwars (UUID VARCHAR(100), NAME VARCHAR(100), KILLS INT, DEATHS INT, WINS INT, PLAYED INT, BED INT, POINTS INT)");
-            }
-        }, 0, 216000);
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(BedWars.getInstance(), () -> update("CREATE TABLE IF NOT EXISTS bedwars (UUID VARCHAR(100), NAME VARCHAR(100), KILLS INT, DEATHS INT, WINS INT, PLAYED INT, BED INT, POINTS INT)"), 0, 216000);
     }
 
     public void createTable() {

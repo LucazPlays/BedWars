@@ -46,6 +46,7 @@ public class BedWarsConfig {
         configuration.addDefault("settings.mysql.dataBase", "dataBase");
         configuration.addDefault("settings.mysql.user", "user");
         configuration.addDefault("settings.mysql.password", "password");
+        configuration.addDefault("settings.mysql.port", 3306);
         configuration.addDefault("settings.mode", "4x2");
         configuration.addDefault("settings.minPlayers", 2);
         configuration.addDefault("settings.shopType", "ARMOR_STAND");
@@ -59,6 +60,8 @@ public class BedWarsConfig {
         configuration.addDefault("settings.coinCommand.playedValue", 5);
         configuration.addDefault("settings.coinCommand.winValue", 20);
         configuration.addDefault("settings.coinCommand.bedValue", 10);
+        configuration.addDefault("settings.premiumKick.enable", true);
+        configuration.addDefault("settings.premiumKick.permission", "bedwars.premium");
 
         configuration.addDefault("settings.motd.lobby", "&a&lLOBBY &f%map%");
         configuration.addDefault("settings.motd.ingame", "&6&lINGAME &f%map%");
@@ -168,6 +171,9 @@ public class BedWarsConfig {
         configuration.addDefault("message.joinGame", "%prefix% %player% &7hat das Spiel betreten");
         configuration.addDefault("message.spectator", "%prefix% &7Du bist ist ein Spectator");
         configuration.addDefault("message.leaveGame", "%prefix% %player% &7hat das Spiel verlassen");
+        configuration.addDefault("message.premiumKick.full", "%prefix% &cDu benötigst mindestens den &6&lPremium &cRang, um diesen Server betreten zu können");
+        configuration.addDefault("message.premiumKick.fullPremium", "%prefix% &cDieser Server ist komplett voll, jeder hat mindestenes einen &6&lPremium &cRang");
+        configuration.addDefault("message.premiumKick.kickPlayer", "%prefix% &cDu wurdest von einem &6&lhöherrängigen &cSpieler gekickt");
         configuration.addDefault("message.actionBar.lobby", "%team%");
         configuration.addDefault("message.actionBar.lobbyWaiting", "%prefix% &fWarte auf &c&l%players% &fSpieler...");
         configuration.addDefault("message.actionBar.game", "&e&lGold &8» %goldVote% &8┃ &e&lItemDrop &8» %itemDropVote% &8┃ &e&lKarte §8» &f&l%map%");

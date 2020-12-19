@@ -45,7 +45,7 @@ public class PlayerDeathListener implements Listener {
                 BedWars.getInstance().getGameHandler().checkTeams(player);
                 BedWars.getInstance().getGameHandler().checkWinner();
                 BedWars.getInstance().getLastHit().remove(player);
-                BedWars.getInstance().getStatsHandler().addKill(player);
+                BedWars.getInstance().getStatsHandler().addKill(killer);
                 BedWars.getInstance().getStatsHandler().addDeath(player);
             } else {
                 respawnPlayer(player);
@@ -71,11 +71,6 @@ public class PlayerDeathListener implements Listener {
     }
 
     private void respawnPlayer(Player player) {
-        Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                player.spigot().respawn();
-            }
-        }, 2);
+        Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> player.spigot().respawn(), 2);
     }
 }

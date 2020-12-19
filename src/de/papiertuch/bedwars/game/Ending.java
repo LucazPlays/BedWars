@@ -109,12 +109,7 @@ public class Ending {
     }
 
     public void startFirework() {
-        Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                setFirework();
-            }
-        }, 20);
+        Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> setFirework(), 20);
     }
 
     public int getSeconds() {
