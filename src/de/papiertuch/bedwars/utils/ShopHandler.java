@@ -43,6 +43,9 @@ public class ShopHandler {
         inventory.setItem(7, new ItemBuilder(Material.valueOf(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.specials.item")), 1)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.specials.name"))
                 .build());
+        inventory.setItem(8, new ItemBuilder(Material.valueOf(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.food.item")), 1)
+                .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.food.name"))
+                .build());
     }
 
     private void fillInventory(Inventory inventory) {
@@ -82,6 +85,9 @@ public class ShopHandler {
                 .build());
         inventory.setItem(16, new ItemBuilder(Material.valueOf(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.specials.item")), 1)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.specials.name"))
+                .build());
+        inventory.setItem(17, new ItemBuilder(Material.valueOf(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.food.item")), 1)
+                .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.food.name"))
                 .build());
         fillInventory(inventory);
         return inventory;
