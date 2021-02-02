@@ -77,13 +77,13 @@ public class ProtectionListener implements Listener {
             }
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+                    event.setCancelled(true);
                     BedWarsTeam team = BedWars.getInstance().getGameHandler().getTeam(player);
                     if (BedWars.getInstance().getTeamChest().containsKey(team)) {
                         player.openInventory(BedWars.getInstance().getTeamChest().get(team));
                         player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound("CHEST_OPEN"), 1, 1);
                         return;
                     }
-                    event.setCancelled(true);
                     Inventory inventory = Bukkit.createInventory(null, 3 * 9, team.getColor() + team.getName());
                     player.openInventory(inventory);
                     player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound("CHEST_OPEN"), 1, 1);

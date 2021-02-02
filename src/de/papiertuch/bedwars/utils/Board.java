@@ -172,16 +172,16 @@ public class Board {
     
 
     public void updateNameTags(Player player) {
-     /*
         if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
             CloudServer.getInstance().updateNameTags(player);
             return;
         }
+        /*
         if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v3") && Bukkit.getPluginManager().getPlugin("CloudNet-CloudPerms") != null) {
             BukkitCloudNetCloudPermissionsPlugin.getInstance().updateNameTags(player);
             return;
         }
-      */
+         */
         TabListGroup playerPermissionGroup = BedWars.getInstance().getGameHandler().getTabListGroup(player);
 
         initScoreboard(player);
