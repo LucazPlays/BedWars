@@ -1,8 +1,10 @@
 package de.papiertuch.bedwars;
 
+import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.bridge.CloudServer;
 import de.dytanic.cloudnet.ext.bridge.BridgeHelper;
 import de.dytanic.cloudnet.ext.bridge.bukkit.BukkitCloudNetHelper;
+import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.server.ServerState;
 import de.papiertuch.bedwars.api.events.GameStateChangeEvent;
 import de.papiertuch.bedwars.commands.ForceMap;
@@ -201,14 +203,27 @@ public class BedWars extends JavaPlugin {
         colorIds.put(Color.WHITE, 0);
         colorIds.put(Color.YELLOW, 4);
 
-        for (String tabList : getBedWarsConfig().getConfiguration().getStringList("nameTags.tabList")) {
-            tabListGroups.add(
-                    new TabListGroup(tabList,
-                            bedWarsConfig.getString("nameTags." + tabList + ".prefix"),
-                            bedWarsConfig.getString("nameTags." + tabList + ".suffix"),
-                            bedWarsConfig.getString("nameTags." + tabList + ".display"),
-                            bedWarsConfig.getInt("nameTags." + tabList + ".tagId"),
-                            bedWarsConfig.getString("nameTags." + tabList + ".permission")));
+        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
+          for (String string : CloudAPI.getInstance().getPermissionPool().getGroups().keySet()) {
+              Bukkit.broadcastMessage(string);
+              PermissionGroup permissionGroup = CloudAPI.getInstance().getPermissionGroup(string);
+              tabListGroups.add(new TabListGroup(string,
+                      permissionGroup.getPrefix(),
+                      permissionGroup.getSuffix(),
+                      permissionGroup.getDisplay(),
+                      permissionGroup.getTagId(),
+                      ""));
+          }
+        } else {
+            for (String tabList : getBedWarsConfig().getConfiguration().getStringList("nameTags.tabList")) {
+                tabListGroups.add(
+                        new TabListGroup(tabList,
+                                bedWarsConfig.getString("nameTags." + tabList + ".prefix"),
+                                bedWarsConfig.getString("nameTags." + tabList + ".suffix"),
+                                bedWarsConfig.getString("nameTags." + tabList + ".display"),
+                                bedWarsConfig.getInt("nameTags." + tabList + ".tagId"),
+                                bedWarsConfig.getString("nameTags." + tabList + ".permission")));
+            }
         }
         loadGame();
 

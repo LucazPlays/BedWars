@@ -1,5 +1,7 @@
 package de.papiertuch.bedwars.utils;
 
+import de.dytanic.cloudnet.api.CloudAPI;
+import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.papiertuch.bedwars.BedWars;
 import de.papiertuch.bedwars.enums.GameState;
 import org.bukkit.*;
@@ -13,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import xyz.haoshoku.nick.api.NickAPI;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,7 +155,7 @@ public class GameHandler {
             ArrayList<String> list = new ArrayList<>();
             for (UUID uuid : team.getPlayers()) {
                 list.add(BedWars.getInstance().getBedWarsConfig().getString("message.inventory.teamChose")
-                .replace("%count%", Bukkit.getPlayer(uuid).getName()));
+                        .replace("%count%", Bukkit.getPlayer(uuid).getName()));
             }
             inv.addItem(new ItemBuilder(Material.LEATHER_BOOTS, 1)
                     .setName(team.getColor() + team.getName())
@@ -170,7 +173,7 @@ public class GameHandler {
         inv.setItem(3, new ItemBuilder(Material.INK_SACK, 1, 10)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("message.voting.withGold"))
                 .setLore(BedWars.getInstance().getBedWarsConfig().getString("message.inventory.votingAmount")
-                .replace("%votes%", String.valueOf(BedWars.getInstance().getWithGold().size())))
+                        .replace("%votes%", String.valueOf(BedWars.getInstance().getWithGold().size())))
                 .build());
         inv.setItem(5, new ItemBuilder(Material.INK_SACK, 1, 8)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("message.voting.withOutGold"))
@@ -260,13 +263,32 @@ public class GameHandler {
         }
     }
 
-    public TabListGroup getTabListGroup(Player player) {
-        for (TabListGroup tabListGroup : BedWars.getInstance().getTabListGroups()) {
-            if (player.hasPermission(tabListGroup.getPermission())) {
-                return tabListGroup;
+    public TabListGroup getDefaultGroup() {
+        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
+            for (TabListGroup tabListGroup : BedWars.getInstance().getTabListGroups()) {
+                if (tabListGroup.getName().equalsIgnoreCase(CloudAPI.getInstance().getPermissionPool().getDefaultGroup().getName())) {
+                    return tabListGroup;
+                }
             }
         }
         return BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
+
+    }
+
+    public TabListGroup getTabListGroup(Player player) {
+        if (BedWars.getInstance().isNickEnable() && !NickAPI.isNicked(player)) {
+            for (TabListGroup tabListGroup : BedWars.getInstance().getTabListGroups()) {
+                if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
+                    PermissionGroup permissionGroup = CloudAPI.getInstance().getOnlinePlayer(player.getUniqueId()).getPermissionEntity().getHighestPermissionGroup(CloudAPI.getInstance().getPermissionPool());
+                    if (permissionGroup.getName().equalsIgnoreCase(tabListGroup.getName())) {
+                        return tabListGroup;
+                    }
+                } else if (player.hasPermission(tabListGroup.getPermission())) {
+                    return tabListGroup;
+                }
+            }
+        }
+        return getDefaultGroup();
     }
 
     public void checkTeams(Player player) {
@@ -493,28 +515,28 @@ public class GameHandler {
 
     public void sendActionBar(Player player, String message) {
         try {
-            String version = Bukkit.getServer().getClass().getPackage().getName().split( "\\." )[3];
-            Class<?> iChatBaseClazz = Class.forName( "net.minecraft.server." + version + ".IChatBaseComponent" );
-            Class<?> chatSerializerClazz = Class.forName( "net.minecraft.server." + version + ".IChatBaseComponent$ChatSerializer" );
-            Method aMethod = chatSerializerClazz.getMethod("a", String.class );
-            Object serializerObject = aMethod.invoke( null, "{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', message) + "\"}" );
-            Class<?> chatClazz = Class.forName( "net.minecraft.server." + version + ".PacketPlayOutChat");
+            String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+            Class<?> iChatBaseClazz = Class.forName("net.minecraft.server." + version + ".IChatBaseComponent");
+            Class<?> chatSerializerClazz = Class.forName("net.minecraft.server." + version + ".IChatBaseComponent$ChatSerializer");
+            Method aMethod = chatSerializerClazz.getMethod("a", String.class);
+            Object serializerObject = aMethod.invoke(null, "{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', message) + "\"}");
+            Class<?> chatClazz = Class.forName("net.minecraft.server." + version + ".PacketPlayOutChat");
 
             Object instanceChatObject;
 
-            if ( !version.equalsIgnoreCase( "v1_12_R1" ) ) {
-                instanceChatObject = chatClazz.getConstructor( iChatBaseClazz, byte.class ).newInstance( serializerObject, (byte) 2 );
+            if (!version.equalsIgnoreCase("v1_12_R1")) {
+                instanceChatObject = chatClazz.getConstructor(iChatBaseClazz, byte.class).newInstance(serializerObject, (byte) 2);
             } else {
-                Class<?> chatMessageType  = Class.forName( "net.minecraft.server." + version + ".ChatMessageType" );
+                Class<?> chatMessageType = Class.forName("net.minecraft.server." + version + ".ChatMessageType");
 
-                instanceChatObject = chatClazz.getConstructor( iChatBaseClazz, chatMessageType ).newInstance( serializerObject, chatMessageType.getEnumConstants()[2] );
+                instanceChatObject = chatClazz.getConstructor(iChatBaseClazz, chatMessageType).newInstance(serializerObject, chatMessageType.getEnumConstants()[2]);
             }
 
-            Object entityPlayerObject = player.getClass().getMethod( "getHandle" ).invoke( player );
-            Object playerConnectionObject = entityPlayerObject.getClass().getField("playerConnection").get( entityPlayerObject );
-            Class<?> packetClazz = Class.forName( "net.minecraft.server." + version + ".Packet");
-            playerConnectionObject.getClass().getMethod( "sendPacket", packetClazz ).invoke( playerConnectionObject, instanceChatObject );
-        } catch ( Exception e ) {
+            Object entityPlayerObject = player.getClass().getMethod("getHandle").invoke(player);
+            Object playerConnectionObject = entityPlayerObject.getClass().getField("playerConnection").get(entityPlayerObject);
+            Class<?> packetClazz = Class.forName("net.minecraft.server." + version + ".Packet");
+            playerConnectionObject.getClass().getMethod("sendPacket", packetClazz).invoke(playerConnectionObject, instanceChatObject);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -48,6 +48,7 @@ public class Ending {
                 if (Bukkit.getPluginManager().getPlugin("NickAddon") != null) {
                     if (NickAPI.isNicked(a)) {
                         NickAddon.getInstance().getApi().setNick(a, false);
+                        BedWars.getInstance().getBoard().addPlayerToBoard(a);
                     }
                 }
                 xp = (((float) 1 / 60) * seconds);

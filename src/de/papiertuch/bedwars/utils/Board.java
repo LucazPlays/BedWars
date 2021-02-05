@@ -172,11 +172,12 @@ public class Board {
     
 
     public void updateNameTags(Player player) {
-        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
+
+        /*
+              if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
             CloudServer.getInstance().updateNameTags(player);
             return;
         }
-        /*
         if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v3") && Bukkit.getPluginManager().getPlugin("CloudNet-CloudPerms") != null) {
             BukkitCloudNetCloudPermissionsPlugin.getInstance().updateNameTags(player);
             return;
@@ -188,15 +189,7 @@ public class Board {
         for (Player all : player.getServer().getOnlinePlayers()) {
             initScoreboard(all);
             if (playerPermissionGroup != null)
-                if (BedWars.getInstance().isNickEnable()) {
-                    if (NickAPI.isNicked(player)) {
-                        addTeamEntry(player, all, BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1));
-                    } else {
-                        addTeamEntry(player, all, playerPermissionGroup);
-                    }
-                } else {
-                    addTeamEntry(player, all, playerPermissionGroup);
-                }
+                addTeamEntry(player, all, playerPermissionGroup);
 
             TabListGroup targetPermissionGroup = BedWars.getInstance().getGameHandler().getTabListGroup(all);
 
@@ -209,14 +202,14 @@ public class Board {
         Team team;
         if (BedWars.getInstance().isNickEnable()) {
             if (NickAPI.isNicked(target)) {
-                TabListGroup tabListGroup = BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
+                TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getDefaultGroup();
                 team = all.getScoreboard().getTeam(tabListGroup.getTagId() + tabListGroup.getName());
             } else {
                 team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
             }
             if (team == null) {
                 if (NickAPI.isNicked(target)) {
-                    TabListGroup tabListGroup = BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
+                    TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getDefaultGroup();
                     team = all.getScoreboard().registerNewTeam(tabListGroup.getTagId() + tabListGroup.getName());
                 } else {
                     team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
@@ -227,7 +220,7 @@ public class Board {
                     team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
             }
             if (NickAPI.isNicked(target)) {
-                TabListGroup tabListGroup = BedWars.getInstance().getTabListGroups().get(BedWars.getInstance().getTabListGroups().size() - 1);
+                TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getDefaultGroup();
                 team.setPrefix(ChatColor.translateAlternateColorCodes('&', tabListGroup.getPrefix()));
                 team.setSuffix(ChatColor.translateAlternateColorCodes('&', tabListGroup.getSuffix()));
                 team.addEntry(target.getName());
