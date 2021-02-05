@@ -284,6 +284,7 @@ public class BedWars extends JavaPlugin {
         getGameHandler().stopSpawner();
         aliveTeams.clear();
         bedWarsTeams.clear();
+        teamChest.clear();
 
         boarder = false;
         gold = true;

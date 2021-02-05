@@ -61,6 +61,8 @@ public class PlayerDeathListener implements Listener {
                 BedWars.getInstance().getGameHandler().checkWinner();
                 BedWars.getInstance().getStatsHandler().addDeath(player);
             }
+        } else {
+            BedWars.getInstance().getGameHandler().setPlayer(player);
         }
     }
 

@@ -20,15 +20,28 @@ import xyz.haoshoku.nick.api.NickAPI;
 
 public class Ending {
 
-    private int taskID, seconds = BedWars.getInstance().getBedWarsConfig().getInt("countDown.endingDuration") + 1;
+    private int
+            taskID,
+            seconds = BedWars.getInstance().getBedWarsConfig().getInt("countDown.endingDuration") + 1;
     private float xp = 1.00f;
 
     public void startCountdown() {
+        BedWars.getInstance().setGameState(GameState.ENDING);
         seconds = BedWars.getInstance().getBedWarsConfig().getInt("countDown.endingDuration") + 1;
         Bukkit.getPluginManager().callEvent(new GameEndingEvent());
         BedWars.getInstance().getScheduler().getGame().stopCountdown();
         BedWars.getInstance().getScheduler().getBoarder().stop();
-        BedWars.getInstance().setGameState(GameState.ENDING);
+        for (Player a : Bukkit.getOnlinePlayers()) {
+            if (BedWars.getInstance().getPlayers().contains(a.getUniqueId())) {
+                BedWars.getInstance().getGameHandler().setPlayer(a);
+                a.playSound(a.getLocation(), BedWars.getInstance().getGameHandler().getSound("FIREWORK_TWINKLE"), 10F, 10F);
+                BedWars.getInstance().getBoard().setScoreBoard(a);
+                BedWars.getInstance().getBoard().updateNameTags(a);
+                BedWars.getInstance().getPlayers().remove(a.getUniqueId());
+            }
+        }
+        startFirework();
+        BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("message.roundEnds"));
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(BedWars.getInstance(), () -> {
             BedWars.getInstance().getBoard().updateBoard();
             for (Player a : Bukkit.getOnlinePlayers()) {
@@ -43,25 +56,19 @@ public class Ending {
                 a.showPlayer(a);
                 a.setAllowFlight(false);
                 a.setFlying(false);
-                if (!BedWars.getInstance().getPlayers().contains(a.getUniqueId())) {
-                    BedWars.getInstance().getGameHandler().setPlayer(a);
-                }
                 if (BedWars.getInstance().getSpectators().contains(a.getUniqueId())) {
                     BedWars.getInstance().getSpectators().remove(a.getUniqueId());
                 }
+                if (BedWars.getInstance().getPlayers().contains(a.getUniqueId())) {
+                    BedWars.getInstance().getGameHandler().setPlayer(a);
+                    a.playSound(a.getLocation(), BedWars.getInstance().getGameHandler().getSound("FIREWORK_TWINKLE"), 10F, 10F);
+                    BedWars.getInstance().getBoard().setScoreBoard(a);
+                    BedWars.getInstance().getBoard().updateNameTags(a);
+                    BedWars.getInstance().getPlayers().remove(a.getUniqueId());
+                }
             }
             switch (seconds) {
-                case 16:
-                    for (Player a : Bukkit.getOnlinePlayers()) {
-                        BedWars.getInstance().getGameHandler().setPlayer(a);
-                        a.playSound(a.getLocation(), BedWars.getInstance().getGameHandler().getSound("FIREWORK_TWINKLE"), 10F, 10F);
-                        BedWars.getInstance().getBoard().setScoreBoard(a);
-                        BedWars.getInstance().getBoard().updateNameTags(a);
-                    }
-                    break;
                 case 15:
-                    startFirework();
-                    BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("message.roundEnds"));
                     BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("message.serverStopIn")
                             .replace("%seconds%", String.valueOf(seconds)));
                     for (Player a : Bukkit.getOnlinePlayers()) {
