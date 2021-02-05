@@ -4,6 +4,7 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.papiertuch.bedwars.BedWars;
 import de.papiertuch.bedwars.enums.GameState;
+import de.papiertuch.nickaddon.NickAddon;
 import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -455,7 +456,9 @@ public class GameHandler {
 
     public void setPlayer(Player player) {
         player.getInventory().clear();
-        Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> player.teleport(BedWars.getInstance().getLocationAPI(BedWars.getInstance().getMap()).getLocation("lobby").add(0, 1, 0)), 2);
+        Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> {
+            player.teleport(BedWars.getInstance().getLocationAPI(BedWars.getInstance().getMap()).getLocation("lobby").add(0, 1, 0));
+        }, 2);
         if (!BedWars.getInstance().getPlayers().contains(player.getUniqueId())) {
             BedWars.getInstance().getPlayers().add(player.getUniqueId());
         }

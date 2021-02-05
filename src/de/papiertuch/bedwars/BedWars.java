@@ -362,6 +362,7 @@ public class BedWars extends JavaPlugin {
         for (String string : randomMap) {
             blocks.put(string, new ArrayList<>());
         }
+        getLocationAPI(BedWars.getInstance().getMap()).getLocation("lobby").getChunk().load();
         if (!randomMap.isEmpty()) {
             getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aDas Spiel ist bereit...");
         }

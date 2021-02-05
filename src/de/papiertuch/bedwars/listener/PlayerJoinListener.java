@@ -34,13 +34,13 @@ public class PlayerJoinListener implements Listener {
                     player.sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
                 }
             }
+            BedWars.getInstance().getStatsHandler().createPlayer(player);
+            BedWars.getInstance().getGameHandler().setPlayer(player);
             if (BedWars.getInstance().isNickEnable()) {
                 if (NickAddon.getInstance().getApi().getAutoNickState(player)) {
                     NickAddon.getInstance().getApi().setNick(player, true);
                 }
             }
-            BedWars.getInstance().getStatsHandler().createPlayer(player);
-            BedWars.getInstance().getGameHandler().setPlayer(player);
             BedWars.getInstance().getBoard().addPlayerToBoard(player);
             event.setJoinMessage(BedWars.getInstance().getBedWarsConfig().getString("message.joinGame")
                     .replace("%player%", player.getDisplayName())
