@@ -36,16 +36,19 @@ public class PlayerJoinListener implements Listener {
             }
             BedWars.getInstance().getStatsHandler().createPlayer(player);
             BedWars.getInstance().getGameHandler().setPlayer(player);
-            if (BedWars.getInstance().isNickEnable()) {
-                if (NickAddon.getInstance().getApi().getAutoNickState(player)) {
-                    NickAddon.getInstance().getApi().setNick(player, true);
-                }
-            }
             BedWars.getInstance().getBoard().addPlayerToBoard(player);
-            event.setJoinMessage(BedWars.getInstance().getBedWarsConfig().getString("message.joinGame")
-                    .replace("%player%", player.getDisplayName())
-                    .replace("%players%", String.valueOf(Bukkit.getOnlinePlayers().size()))
-                    .replace("%maxPlayers%", String.valueOf(BedWars.getInstance().getGameHandler().getMaxPlayers())));
+            if (BedWars.getInstance().isNickEnable()) {
+                Bukkit.getScheduler().runTaskLater(BedWars.getInstance(), () -> {
+                    if (NickAddon.getInstance().getApi().getAutoNickState(player)) {
+                        NickAddon.getInstance().getApi().setNick(player, true);
+                        BedWars.getInstance().getBoard().addPlayerToBoard(player);
+                        event.setJoinMessage(BedWars.getInstance().getBedWarsConfig().getString("message.joinGame")
+                                .replace("%player%", player.getDisplayName())
+                                .replace("%players%", String.valueOf(Bukkit.getOnlinePlayers().size()))
+                                .replace("%maxPlayers%", String.valueOf(BedWars.getInstance().getGameHandler().getMaxPlayers())));
+                    }
+                },2);
+            }
             if ((BedWars.getInstance().getPlayers().size() >= BedWars.getInstance().getBedWarsConfig().getInt("settings.minPlayers")) && (!BedWars.getInstance().getScheduler().getLobby().isRunning())) {
                 BedWars.getInstance().getScheduler().getLobby().stopWaiting();
                 BedWars.getInstance().getScheduler().getLobby().startCountdown();

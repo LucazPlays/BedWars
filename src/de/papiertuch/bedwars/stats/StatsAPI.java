@@ -9,6 +9,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
+import xyz.haoshoku.nick.api.NickAPI;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +33,11 @@ public class StatsAPI {
     public StatsAPI(Player player) {
         this.player = player;
         this.uuid = player.getUniqueId();
+        if (BedWars.getInstance().isNickEnable()) {
+            if (NickAPI.isNicked(player)) {
+                this.name = NickAPI.getOriginalName(player);
+            }
+        }
         this.name = player.getName();
     }
 
@@ -178,11 +184,11 @@ public class StatsAPI {
     }
 
 
-    private List<String> getRanking() {
+    private ArrayList<String> getRanking() {
         if (!BedWars.getInstance().getMySQL().isConnected()) {
             return new ArrayList<>();
         }
-        List<String> ranking = new ArrayList<>();
+        ArrayList<String> ranking = new ArrayList<>();
         try {
             int rank = 0;
             PreparedStatement preparedStatement = BedWars.getInstance().getMySQL().getConnection().prepareStatement("SELECT * FROM bedwars ORDER BY POINTS DESC");
@@ -207,32 +213,43 @@ public class StatsAPI {
             return;
         }
         ArrayList<Location> list = BedWars.getInstance().getStatsWall();
+        ArrayList<String> ranking = getRanking();
         try {
             for (int i = 0; i < list.size(); i++) {
                 int id = i + 1;
-                if (getRanking().size() >= (i + 1)) {
-                    String name = getRanking().get(i);
-                    if (list.get(i).getBlock().getType() != Material.SKULL_ITEM && list.get(i).getBlock().getType() != Material.SKULL) {
-                       Bukkit.broadcastMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") +  " §cEs wurde kein Kopf an der folgenden Stelle gefunden");
-                        Bukkit.broadcastMessage("§8» §fX: " + list.get(i).getBlockX());
-                        Bukkit.broadcastMessage("§8» §fY: " + list.get(i).getBlockY());
-                        Bukkit.broadcastMessage("§8» §fZ: " + list.get(i).getBlockZ());
-                        continue;
-                    }
-                    Skull skull = (Skull) list.get(i).getBlock().getState();
-                    skull.setSkullType(SkullType.PLAYER);
+                String name = "???";
+                if (ranking.size() >= (id)) {
+                    name = ranking.get(i);
+                }
+                if (list.get(i).getBlock().getType() != Material.SKULL_ITEM && list.get(i).getBlock().getType() != Material.SKULL) {
+                    Bukkit.broadcastMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cEs wurde kein Kopf an der folgenden Stelle gefunden");
+                    Bukkit.broadcastMessage("§8» §fX: " + list.get(i).getBlockX());
+                    Bukkit.broadcastMessage("§8» §fY: " + list.get(i).getBlockY());
+                    Bukkit.broadcastMessage("§8» §fZ: " + list.get(i).getBlockZ());
+                    continue;
+                }
+                Skull skull = (Skull) list.get(i).getBlock().getState();
+                skull.setSkullType(SkullType.PLAYER);
+                if (ranking.size() >= (id)) {
                     skull.setOwner(name);
-                    skull.update();
-                    Location loc = new Location((list.get(i)).getWorld(), (list.get(i)).getX(), (list.get(i)).getBlockY() - 1, (list.get(i)).getZ());
-                    if (loc.getBlock().getState() instanceof Sign) {
-                        BlockState blockState = loc.getBlock().getState();
-                        Sign sign = (Sign) blockState;
-                        sign.setLine(0, "Platz §8#" + id);
-                        sign.setLine(1, "§8" + name);
+                } else {
+                    skull.setOwner("MHF_Question");
+                }
+                skull.update();
+                Location loc = new Location((list.get(i)).getWorld(), (list.get(i)).getX(), (list.get(i)).getBlockY() - 1, (list.get(i)).getZ());
+                if (loc.getBlock().getState() instanceof Sign) {
+                    BlockState blockState = loc.getBlock().getState();
+                    Sign sign = (Sign) blockState;
+                    sign.setLine(0, "Platz §8#" + id);
+                    sign.setLine(1, "§8" + name);
+                    if (ranking.size() >= (id)) {
                         sign.setLine(2, "§l" + getInt(name, "POINTS") + " §rPunkte");
                         sign.setLine(3, "§l" + getInt(name, "WINS") + " §rWins");
-                        sign.update();
+                    } else {
+                        sign.setLine(2, "0 §rPunkte");
+                        sign.setLine(3, "0 §rWins");
                     }
+                    sign.update();
                 }
             }
         } catch (Exception ex) {
