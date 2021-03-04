@@ -17,7 +17,7 @@ public class ServerPingListener implements Listener {
     @EventHandler
     public void onPing(ServerListPingEvent event) {
         if (BedWars.getInstance().getGameState() != GameState.LOADGAME) {
-            if (!BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2") && !BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
+            if (!BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2.enable") && !BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2.enable")) {
                /*
                 if (BedWars.getInstance().getGameState() == GameState.INGAME || BedWars.getInstance().getGameState() == GameState.ENDING) {
                     event.setMaxPlayers(BedWars.getInstance().getGameHandler().getMaxPlayers() + 50);

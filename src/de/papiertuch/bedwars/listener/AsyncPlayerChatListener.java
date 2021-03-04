@@ -3,6 +3,7 @@ package de.papiertuch.bedwars.listener;
 import de.papiertuch.bedwars.BedWars;
 import de.papiertuch.bedwars.enums.GameState;
 import de.papiertuch.bedwars.utils.BedWarsTeam;
+import de.papiertuch.bedwars.utils.TabListGroup;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,8 +26,13 @@ public class AsyncPlayerChatListener implements Listener {
         event.setCancelled(true);
         String message = event.getMessage();
         if (BedWars.getInstance().getGameState() == GameState.LOBBY || BedWars.getInstance().getGameState() == GameState.ENDING) {
+            TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getTabListGroup(player);
             BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("chat.format.team")
                     .replace("%player%", player.getDisplayName())
+                    .replace("%name%", player.getName())
+                    .replace("%prefix%", tabListGroup.getPrefix())
+                    .replace("%suffix%", tabListGroup.getSuffix())
+                    .replace("%display%", tabListGroup.getDisplay())
                     .replace("%message%", message));
         } else if (BedWars.getInstance().getSpectators().contains(player.getUniqueId())) {
             for (UUID spec : BedWars.getInstance().getSpectators()) {
@@ -41,6 +47,10 @@ public class AsyncPlayerChatListener implements Listener {
             BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("chat.format.team")
                     .replace("%player%", player.getDisplayName())
                     .replace("%message%", message));
+        } else if (BedWars.getInstance().getGameHandler().getTeam(player).getPlayers().size() == 1) {
+            BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("chat.format.all")
+                    .replace("%player%", player.getDisplayName())
+                    .replace("%message%", "" + message));
         } else if (message.startsWith("@all ")) {
             BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("chat.format.all")
                     .replace("%player%", player.getDisplayName())

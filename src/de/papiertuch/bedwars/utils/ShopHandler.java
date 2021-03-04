@@ -279,14 +279,17 @@ public class ShopHandler {
         setMainItems(inventory);
         inventory.setItem(21, new ItemBuilder(Material.WOOD_PICKAXE, BedWars.getInstance().getBedWarsConfig().getInt("inventory.shop.item.woodPickAxe.amount"))
                 .setLore("§8» " + getPrice("woodPickAxe"))
+                .enchant(Enchantment.DIG_SPEED, 1)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.item.woodPickAxe.name"))
                 .build());
         inventory.setItem(22, new ItemBuilder(Material.STONE_PICKAXE, BedWars.getInstance().getBedWarsConfig().getInt("inventory.shop.item.stonePickAxe.amount"))
                 .setLore("§8» " + getPrice("stonePickAxe"))
+                .enchant(Enchantment.DIG_SPEED, 1)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.item.stonePickAxe.name"))
                 .build());
         inventory.setItem(23, new ItemBuilder(Material.IRON_PICKAXE, BedWars.getInstance().getBedWarsConfig().getInt("inventory.shop.item.ironPickAxe.amount"))
                 .setLore("§8» " + getPrice("ironPickAxe"))
+                .enchant(Enchantment.DIG_SPEED, 1)
                 .setName(BedWars.getInstance().getBedWarsConfig().getString("inventory.shop.item.ironPickAxe.name"))
                 .build());
 

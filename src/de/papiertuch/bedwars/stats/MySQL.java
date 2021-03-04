@@ -25,7 +25,6 @@ public class MySQL {
                     BedWars.getInstance().getBedWarsConfig().getString("settings.mysql.user"),
                     BedWars.getInstance().getBedWarsConfig().getConfiguration().getString("settings.mysql.password"));
             Bukkit.getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aEine Verbindung zum MySQl-Server war erfolgreich");
-            new StatsAPI().setStatsWall();
         } catch (Exception e) {
             Bukkit.getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDie Verbindung zum MySQL-Server ist fehlgeschlagen");
         }

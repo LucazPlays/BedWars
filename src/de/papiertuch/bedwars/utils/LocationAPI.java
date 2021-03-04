@@ -19,6 +19,7 @@ public class LocationAPI {
 
     private File file;
     private FileConfiguration cfg;
+    private String map;
 
     public void setLocation(String name, Location loc) {
         String world = loc.getWorld().getName();
@@ -44,6 +45,7 @@ public class LocationAPI {
     }
 
     public LocationAPI(String map) {
+        this.map = map;
         file = new File("plugins/BedWars", map + ".yml");
         cfg = YamlConfiguration.loadConfiguration(file);
     }
@@ -86,7 +88,8 @@ public class LocationAPI {
             return loc;
         } catch (Exception e) {
             Bukkit.broadcastMessage(BedWars.getInstance().getBedWarsConfig().getString("message.locationNotFound")
-            .replace("%loc%", name));
+                    .replace("%map%", this.map)
+                    .replace("%loc%", name));
         }
         return null;
     }

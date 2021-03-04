@@ -172,17 +172,6 @@ public class Board {
     
 
     public void updateNameTags(Player player) {
-
-        /*
-              if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
-            CloudServer.getInstance().updateNameTags(player);
-            return;
-        }
-        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v3") && Bukkit.getPluginManager().getPlugin("CloudNet-CloudPerms") != null) {
-            BukkitCloudNetCloudPermissionsPlugin.getInstance().updateNameTags(player);
-            return;
-        }
-         */
         TabListGroup playerPermissionGroup = BedWars.getInstance().getGameHandler().getTabListGroup(player);
 
         initScoreboard(player);
@@ -199,52 +188,30 @@ public class Board {
     }
 
     private void addTeamEntry(Player target, Player all, TabListGroup permissionGroup) {
-        Team team;
-        if (BedWars.getInstance().isNickEnable()) {
-            if (NickAPI.isNicked(target)) {
-                TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getDefaultGroup();
-                team = all.getScoreboard().getTeam(tabListGroup.getTagId() + tabListGroup.getName());
-            } else {
-                team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
-            }
-            if (team == null) {
-                if (NickAPI.isNicked(target)) {
-                    TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getDefaultGroup();
-                    team = all.getScoreboard().registerNewTeam(tabListGroup.getTagId() + tabListGroup.getName());
-                } else {
-                    team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
-                }
-            } else {
-                team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
-                if (team == null)
-                    team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
-            }
-            if (NickAPI.isNicked(target)) {
-                TabListGroup tabListGroup = BedWars.getInstance().getGameHandler().getDefaultGroup();
-                team.setPrefix(ChatColor.translateAlternateColorCodes('&', tabListGroup.getPrefix()));
-                team.setSuffix(ChatColor.translateAlternateColorCodes('&', tabListGroup.getSuffix()));
-                team.addEntry(target.getName());
-                target.setDisplayName(ChatColor.translateAlternateColorCodes('&', tabListGroup.getDisplay()) + target.getName());
-            } else {
+        Team team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
+
+        if (team == null)
+            team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
+
+        String pattern = BedWars.getInstance().getBedWarsConfig().getString("module.cloudNet.v2.nameTagPattern");
+        switch (pattern) {
+            case "%prefix%":
                 team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
-                team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
-                team.addEntry(target.getName());
-                target.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()) + target.getName());
-            }
-        } else {
-            team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
-            if (team == null) {
-                team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
-            } else {
-                team = all.getScoreboard().getTeam(permissionGroup.getTagId() + permissionGroup.getName());
-                if (team == null)
-                    team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
-            }
-            team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
-            team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
-            team.addEntry(target.getName());
-            target.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()) + target.getName());
+                break;
+            case "%display%":
+                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
+                break;
+            case "%suffix%":
+                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
+                break;
+            default:
+                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
+                break;
+
         }
+        team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
+        team.addEntry(target.getName());
+        target.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()) + target.getName());
     }
 
     private void initScoreboard(Player all) {

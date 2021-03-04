@@ -67,6 +67,9 @@ public class Ending {
                     BedWars.getInstance().getBoard().updateNameTags(a);
                     BedWars.getInstance().getPlayers().remove(a.getUniqueId());
                 }
+                if (!a.getLocation().getWorld().getName().equalsIgnoreCase("world")) {
+                    BedWars.getInstance().getGameHandler().setPlayer(a);
+                }
             }
             switch (seconds) {
                 case 15:

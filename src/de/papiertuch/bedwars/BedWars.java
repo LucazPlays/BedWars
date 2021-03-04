@@ -15,6 +15,7 @@ import de.papiertuch.bedwars.enums.GameState;
 import de.papiertuch.bedwars.game.Scheduler;
 import de.papiertuch.bedwars.listener.*;
 import de.papiertuch.bedwars.stats.MySQL;
+import de.papiertuch.bedwars.stats.StatsAPI;
 import de.papiertuch.bedwars.stats.StatsHandler;
 import de.papiertuch.bedwars.utils.*;
 import org.bukkit.*;
@@ -99,6 +100,26 @@ public class BedWars extends JavaPlugin {
             getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDas Plugin ist nur für die Versionen 1.8.3 - 1.12.2 gedacht");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
+        }
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("http://91.200.103.230/check/bedWars.php").openConnection();
+            connection.setRequestProperty("User-Agent", this.getDescription().getVersion());
+            connection.setConnectTimeout(1000);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            newVersion = bufferedReader.readLine();
+            if (newVersion.equalsIgnoreCase("false")) {
+                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDu hast eine Version die deaktiviert wurde");
+                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cLade dir bitte die neuste Version runter");
+                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §bDiscord https://papiertu.ch/go/discord/ oder Papiertuch#7836");
+                getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
+                return;
+            } else if (!newVersion.equalsIgnoreCase(BedWars.getInstance().getDescription().getVersion())) {
+                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aEs ist eine neue Version verfügbar §8» §f§l" + newVersion);
+                getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
+            }
+        } catch (IOException e) {
+            getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cEs konnte keine Verbindung zum WebServer aufgebaut werden, du erhälst keine Update Benachrichtigungen");
         }
 
         statsHandler = new StatsHandler();
@@ -203,17 +224,17 @@ public class BedWars extends JavaPlugin {
         colorIds.put(Color.WHITE, 0);
         colorIds.put(Color.YELLOW, 4);
 
-        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
-          for (String string : CloudAPI.getInstance().getPermissionPool().getGroups().keySet()) {
-              Bukkit.broadcastMessage(string);
-              PermissionGroup permissionGroup = CloudAPI.getInstance().getPermissionGroup(string);
-              tabListGroups.add(new TabListGroup(string,
-                      permissionGroup.getPrefix(),
-                      permissionGroup.getSuffix(),
-                      permissionGroup.getDisplay(),
-                      permissionGroup.getTagId(),
-                      ""));
-          }
+        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2.enable")) {
+            for (String string : CloudAPI.getInstance().getPermissionPool().getGroups().keySet()) {
+                Bukkit.broadcastMessage(string);
+                PermissionGroup permissionGroup = CloudAPI.getInstance().getPermissionGroup(string);
+                tabListGroups.add(new TabListGroup(string,
+                        permissionGroup.getPrefix(),
+                        permissionGroup.getSuffix(),
+                        permissionGroup.getDisplay(),
+                        permissionGroup.getTagId(),
+                        ""));
+            }
         } else {
             for (String tabList : getBedWarsConfig().getConfiguration().getStringList("nameTags.tabList")) {
                 tabListGroups.add(
@@ -225,7 +246,6 @@ public class BedWars extends JavaPlugin {
                                 bedWarsConfig.getString("nameTags." + tabList + ".permission")));
             }
         }
-        loadGame();
 
         getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §7Geladene Teams");
         for (BedWarsTeam team : getBedWarsTeams()) {
@@ -236,15 +256,12 @@ public class BedWars extends JavaPlugin {
             getServer().getConsoleSender().sendMessage("§f§l- " + tabListGroup.getDisplay() + tabListGroup.getName());
         }
 
-        for (int i = 1; i < BedWars.getInstance().getLocationAPI(getMap()).getCfg().getInt("statsWall") + 1; i++) {
-            statsWall.add(getLocationAPI(getMap()).getLocation("statsSkull." + i));
-        }
-
         register();
         mySQL.connect();
         if (mySQL.isConnected()) {
             mySQL.createTable();
         }
+        loadGame();
 
         if (getServer().getPluginManager().getPlugin("NickAddon") != null) {
             nickEnable = true;
@@ -253,25 +270,6 @@ public class BedWars extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(getServer().getPluginManager().getPlugin("Multiverse-Core"));
             getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §eDas Plugin Multiverse-Core wurde deaktiviert, dass BedWars Plugin lädt die welten selbst");
             getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §eUm dich auf die Welten zu teleportieren nutze /setup tp <Map>");
-        }
-
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://papiertu.ch/check/bedWars.php").openConnection();
-            connection.setRequestProperty("User-Agent", this.getDescription().getVersion());
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            newVersion = bufferedReader.readLine();
-            if (newVersion.equalsIgnoreCase("false")) {
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDu hast eine Version die deaktiviert wurde");
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cLade dir bitte die neuste Version runter");
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §bDiscord https://papiertu.ch/go/discord/ oder Papiertuch#7836");
-                getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
-                getServer().getPluginManager().disablePlugin(this);
-            } else if (!newVersion.equalsIgnoreCase(BedWars.getInstance().getDescription().getVersion())) {
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aEs ist eine neue Version verfügbar §8» §f§l" + newVersion);
-                getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
-            }
-        } catch (IOException e) {
-            getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cEs konnte keine Verbindung zum WebServer aufgebaut werden, du erhälst keine Update Benachrichtigungen");
         }
     }
 
@@ -307,8 +305,7 @@ public class BedWars extends JavaPlugin {
         forceMap = false;
 
         gameState = GameState.LOADGAME;
-
-        setGameState(GameState.LOBBY);
+        setGameState(GameState.LOADGAME);
 
         int tagId = 0;
         for (String team : getBedWarsConfig().getConfiguration().getStringList("team.teams")) {
@@ -359,10 +356,19 @@ public class BedWars extends JavaPlugin {
             int random = new Random().nextInt(randomMap.size());
             this.map = randomMap.get(random);
         }
+        if (statsWall.isEmpty()) {
+            for (int i = 1; i < BedWars.getInstance().getLocationAPI(getMap()).getCfg().getInt("statsWall") + 1; i++) {
+                statsWall.add(getLocationAPI(getMap()).getLocation("statsSkull." + i));
+            }
+        }
+        new StatsAPI().setStatsWall();
         for (String string : randomMap) {
             blocks.put(string, new ArrayList<>());
         }
-        getLocationAPI(BedWars.getInstance().getMap()).getLocation("lobby").getChunk().load();
+        setGameState(GameState.LOBBY);
+        if (getServer().getWorld(map) != null) {
+            getLocationAPI(map).getLocation("lobby").getChunk().load();
+        }
         if (!randomMap.isEmpty()) {
             getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aDas Spiel ist bereit...");
         }
@@ -396,7 +402,7 @@ public class BedWars extends JavaPlugin {
 
     public void setGameState(GameState gameState) {
         getServer().getPluginManager().callEvent(new GameStateChangeEvent(getGameState(), gameState));
-        if (getBedWarsConfig().getBoolean("module.cloudNet.v2")) {
+        if (getBedWarsConfig().getBoolean("module.cloudNet.v2.enable")) {
             if (gameState == GameState.LOBBY || gameState == GameState.LOADGAME) {
                 CloudServer cloudServer = CloudServer.getInstance();
                 cloudServer.setMaxPlayers(getGameHandler().getMaxPlayers());
@@ -418,7 +424,7 @@ public class BedWars extends JavaPlugin {
                 cloudServer.setServerState(ServerState.OFFLINE);
                 cloudServer.update();
             }
-        } else if (getBedWarsConfig().getBoolean("module.cloudNet.v3")) {
+        } else if (getBedWarsConfig().getBoolean("module.cloudNet.v3.enable")) {
             if (gameState == GameState.LOBBY || gameState == GameState.LOADGAME) {
                 BukkitCloudNetHelper.setMaxPlayers(getGameHandler().getMaxPlayers());
                 BukkitCloudNetHelper.setApiMotd(getMap());
