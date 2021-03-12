@@ -10,8 +10,7 @@ public class ConfigInput {
     public ConfigInput(String path, Object value) {
         this.path = path;
         this.value = value;
-        BedWars.getInstance().getBedWarsConfig().getList().put(path, this);
-
+        BedWars.getInstance().getBedWarsConfig().getSortedList().add(this);
     }
 
     public Object getValue() {

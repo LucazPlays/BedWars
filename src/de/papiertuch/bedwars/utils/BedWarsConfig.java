@@ -24,14 +24,14 @@ public class BedWarsConfig {
     private FileConfiguration configuration;
 
     private HashMap<String, Object> cache;
-    private HashMap<String, ConfigInput> list;
+    private ArrayList<ConfigInput> sortedList;
 
     public BedWarsConfig() {
         file = new File("plugins/BedWars", "config.yml");
         configuration = YamlConfiguration.loadConfiguration(file);
 
         cache = new HashMap<>();
-        list = new HashMap<>();
+        sortedList = new ArrayList<>();
     }
 
     public void loadConfig() {
@@ -41,7 +41,7 @@ public class BedWarsConfig {
         }
         configuration.options().copyDefaults(true);
 
-        for (ConfigInput configInput : list.values()) {
+        for (ConfigInput configInput : sortedList) {
            configuration.addDefault(configInput.getPath(), configInput.getValue());
         }
         save();
@@ -516,9 +516,9 @@ public class BedWarsConfig {
             }
             return (Integer) cache.get(string);
         } catch (Exception e) {
-            configuration.set(string, list.get(string).getValue());
+            configuration.set(string, getConfigInput(string).getValue());
             save();
-            return (Integer) list.get(string).getValue();
+            return (Integer) getConfigInput(string).getValue();
         }
     }
 
@@ -529,9 +529,9 @@ public class BedWarsConfig {
             }
             return (Boolean) cache.get(string);
         } catch (Exception e) {
-            configuration.set(string, list.get(string).getValue());
+            configuration.set(string, getConfigInput(string).getValue());
             save();
-            return (Boolean) list.get(string).getValue();
+            return (Boolean) getConfigInput(string).getValue();
         }
     }
 
@@ -544,14 +544,23 @@ public class BedWarsConfig {
             return (String) cache.get(string);
         } catch (Exception e) {
             System.out.print(string);
-            System.out.print(list.get(string).getValue());
-            configuration.set(string, list.get(string).getValue());
+            System.out.print(getConfigInput(string).getValue());
+            configuration.set(string, getConfigInput(string).getValue());
             save();
-            return (String) list.get(string).getValue();
+            return (String) getConfigInput(string).getValue();
         }
     }
 
-    public HashMap<String, ConfigInput> getList() {
-        return list;
+    private ConfigInput getConfigInput(String string) {
+        for (ConfigInput configInput : sortedList) {
+            if (configInput.getPath().equalsIgnoreCase(string)) {
+                return configInput;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<ConfigInput> getSortedList() {
+        return sortedList;
     }
 }
