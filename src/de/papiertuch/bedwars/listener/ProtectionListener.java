@@ -67,6 +67,15 @@ public class ProtectionListener implements Listener {
     public void onInt(PlayerInteractEvent event) {
         try {
             Player player = event.getPlayer();
+            if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
+                event.setCancelled(true);
+            }
+            if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.CARROT) {
+                event.setCancelled(true);
+            }
+            if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.WHEAT) {
+                event.setCancelled(true);
+            }
             if (!BedWars.getInstance().getGameHandler().getSetup().containsKey(player.getUniqueId())) {
                 if (event.getClickedBlock().getType() == Material.NOTE_BLOCK) {
                     event.setCancelled(true);
