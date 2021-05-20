@@ -19,7 +19,7 @@ public class Game {
     private int taskID;
 
     public void startCountdown() {
-        minutes = BedWars.getInstance().getBedWarsConfig().getInt("countDown.gameTime");
+        minutes = BedWars.getInstance().getBedWarsConfig().getConfiguration().getInt("countDown.gameTime");
         Bukkit.getPluginManager().callEvent(new GameStatingEvent());
         setGameStuff();
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(BedWars.getInstance(), () -> {
@@ -33,7 +33,7 @@ public class Game {
                         .replace("%map%", BedWars.getInstance().getMap()));
             }
             BedWars.getInstance().getBoard().updateBoard();
-            if (BedWars.getInstance().getBedWarsConfig().getBoolean("border")) {
+            if (BedWars.getInstance().getBedWarsConfig().getBoolean("settings.border")) {
                 switch (minutes) {
                     case 1200:
                         BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("message.borderIn")

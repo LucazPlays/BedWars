@@ -179,6 +179,7 @@ public class BlockBreakListener implements Listener {
                 return;
             }
             if (event.getBlock().getType() == Material.BED || event.getBlock().getType() == Material.BED_BLOCK) {
+                event.setCancelled(true);
                 LocationAPI locationAPI = BedWars.getInstance().getLocationAPI(BedWars.getInstance().getMap());
                 for (BedWarsTeam team : BedWars.getInstance().getBedWarsTeams()) {
                     if (event.getBlock().getLocation().equals(locationAPI.getBedLocation(team.getName().toLowerCase() + ".bed")) || event.getBlock().getLocation().equals(locationAPI.getBedLocation(team.getName().toLowerCase() + ".bedTop"))) {
@@ -193,8 +194,8 @@ public class BlockBreakListener implements Listener {
                                     .replace("%player%", player.getDisplayName())
                                     .replace("%team%", team.getColor() + team.getName()));
                             player.playSound(player.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.kill")), 1F, 1F);
-                            locationAPI.getBedLocation(team.getName().toLowerCase() + ".bed").getBlock().setType(Material.AIR);
-                            locationAPI.getBedLocation(team.getName().toLowerCase() + ".bedTop").getBlock().setType(Material.AIR);
+                            event.getBlock().setType(Material.AIR);
+                            event.getBlock().getDrops().clear();
                             for (Player a : Bukkit.getOnlinePlayers()) {
                                 a.playSound(a.getLocation(), BedWars.getInstance().getGameHandler().getSound(BedWars.getInstance().getBedWarsConfig().getString("sound.destroyBed")), 10F, 10F);
                                 BedWars.getInstance().getBoard().updateBoard();

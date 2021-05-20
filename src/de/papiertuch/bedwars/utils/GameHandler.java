@@ -277,8 +277,10 @@ public class GameHandler {
     }
 
     public TabListGroup getTabListGroup(Player player) {
-        if (BedWars.getInstance().isNickEnable() && !NickAPI.isNicked(player)) {
-            for (TabListGroup tabListGroup : BedWars.getInstance().getTabListGroups()) {
+        if (BedWars.getInstance().isNickEnable() && NickAPI.isNicked(player)) {
+            return getDefaultGroup();
+        }
+        for (TabListGroup tabListGroup : BedWars.getInstance().getTabListGroups()) {
                 if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v2.enable")) {
                     PermissionGroup permissionGroup = CloudAPI.getInstance().getOnlinePlayer(player.getUniqueId()).getPermissionEntity().getHighestPermissionGroup(CloudAPI.getInstance().getPermissionPool());
                     if (permissionGroup.getName().equalsIgnoreCase(tabListGroup.getName())) {
@@ -287,7 +289,6 @@ public class GameHandler {
                 } else if (player.hasPermission(tabListGroup.getPermission())) {
                     return tabListGroup;
                 }
-            }
         }
         return getDefaultGroup();
     }

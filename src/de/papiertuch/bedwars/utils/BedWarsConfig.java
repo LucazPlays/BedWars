@@ -42,7 +42,9 @@ public class BedWarsConfig {
         configuration.options().copyDefaults(true);
 
         for (ConfigInput configInput : sortedList) {
-           configuration.addDefault(configInput.getPath(), configInput.getValue());
+            if (configuration.get(configInput.getPath()) == null) {
+                configuration.set(configInput.getPath(), configInput.getValue());
+            }
         }
         save();
     }
@@ -67,7 +69,7 @@ public class BedWarsConfig {
         new ConfigInput("settings.mysql.port", 3306);
         new ConfigInput("settings.mode", "4x2");
         new ConfigInput("settings.minPlayers", 2);
-        new ConfigInput("settings.shopType", "ARMOR_STAND");
+        new ConfigInput("settings.shopType", "VILLAGER");
         new ConfigInput("settings.border", true);
         new ConfigInput("settings.enableStats", true);
         new ConfigInput("settings.stopServerAfterRound", false);

@@ -193,22 +193,7 @@ public class Board {
         if (team == null)
             team = all.getScoreboard().registerNewTeam(permissionGroup.getTagId() + permissionGroup.getName());
 
-        String pattern = BedWars.getInstance().getBedWarsConfig().getString("module.cloudNet.v2.nameTagPattern");
-        switch (pattern) {
-            case "%prefix%":
-                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
-                break;
-            case "%display%":
-                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
-                break;
-            case "%suffix%":
-                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
-                break;
-            default:
-                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
-                break;
-
-        }
+        team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
         team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
         team.addEntry(target.getName());
         target.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()) + target.getName());

@@ -103,7 +103,7 @@ public class BedWars extends JavaPlugin {
         }
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("http://91.200.103.230/check/bedWars.php").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://papiertu.ch/check/bedWars.php").openConnection();
             connection.setRequestProperty("User-Agent", this.getDescription().getVersion());
             connection.setConnectTimeout(1000);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

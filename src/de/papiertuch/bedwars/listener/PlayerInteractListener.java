@@ -113,6 +113,7 @@ public class PlayerInteractListener implements Listener {
                     String path = player.getWorld().getName();
                     if (path.equalsIgnoreCase("world")) {
                         player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §cDie Wartelobby musst du nicht speichern...");
+                        return;
                     }
                     String target = "plugins/BedWars/mapBackup/" + path;
                     BedWars.getInstance().getGameHandler().copyFilesInDirectory(new File(path), new File(target));
