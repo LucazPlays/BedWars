@@ -14,6 +14,7 @@ import de.papiertuch.bedwars.commands.Stats;
 import de.papiertuch.bedwars.enums.GameState;
 import de.papiertuch.bedwars.game.Scheduler;
 import de.papiertuch.bedwars.listener.*;
+import de.papiertuch.bedwars.metrics.Metrics;
 import de.papiertuch.bedwars.stats.MySQL;
 import de.papiertuch.bedwars.stats.StatsAPI;
 import de.papiertuch.bedwars.stats.StatsHandler;
@@ -26,12 +27,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
@@ -102,25 +99,15 @@ public class BedWars extends JavaPlugin {
             return;
         }
 
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://papiertu.ch/check/bedWars.php").openConnection();
-            connection.setRequestProperty("User-Agent", this.getDescription().getVersion());
-            connection.setConnectTimeout(1000);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            newVersion = bufferedReader.readLine();
-            if (newVersion.equalsIgnoreCase("false")) {
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cDu hast eine Version die deaktiviert wurde");
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cLade dir bitte die neuste Version runter");
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §bDiscord https://papiertu.ch/go/discord/ oder Papiertuch#7836");
-                getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
-                return;
-            } else if (!newVersion.equalsIgnoreCase(BedWars.getInstance().getDescription().getVersion())) {
-                getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §aEs ist eine neue Version verfügbar §8» §f§l" + newVersion);
-                getServer().getConsoleSender().sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
+        try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + 68403).openStream(); Scanner scanner = new Scanner(inputStream)) {
+            if (scanner.hasNext()) {
+                newVersion = scanner.next();
             }
-        } catch (IOException e) {
-            getServer().getConsoleSender().sendMessage("§8[§e§lBedWars§8] §cEs konnte keine Verbindung zum WebServer aufgebaut werden, du erhälst keine Update Benachrichtigungen");
+        } catch (IOException exception) {
+            System.out.println("[BedWars] No connection to the WebServer could be established, you will not receive update notifications");
         }
+
+        new Metrics(this, 11739);
 
         statsHandler = new StatsHandler();
         mySQL = new MySQL();

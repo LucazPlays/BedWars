@@ -84,7 +84,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLoginEvent(PlayerLoginEvent event) {
         if (BedWars.getInstance().getGameState() == GameState.LOBBY) {
-            if (BedWars.getInstance().getBedWarsConfig().getBoolean("settings.premiumKick.permission")) {
+            if (BedWars.getInstance().getBedWarsConfig().getBoolean("settings.premiumKick.enable")) {
                 Player player = event.getPlayer();
                 int i = getMaxPlayers();
                 if (Bukkit.getOnlinePlayers().size() != i) {
