@@ -1,10 +1,13 @@
 package de.papiertuch.bedwars.listener;
 
+import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.bridge.CloudServer;
 import de.dytanic.cloudnet.ext.bridge.bukkit.BukkitCloudNetHelper;
 import de.papiertuch.bedwars.BedWars;
 import de.papiertuch.bedwars.enums.GameState;
 import de.papiertuch.nickaddon.NickAddon;
+import eu.thesimplecloud.plugin.startup.CloudPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,8 +35,8 @@ public class PlayerJoinListener implements Listener {
         if (BedWars.getInstance().getGameState() == GameState.LOBBY) {
             if (player.hasPermission("update.notify")) {
                 if (BedWars.getInstance().getNewVersion() != null && !BedWars.getInstance().getNewVersion().equalsIgnoreCase(BedWars.getInstance().getDescription().getVersion())) {
-                    player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §aEs ist eine neue Version verfügbar §8» §f§l" + BedWars.getInstance().getNewVersion());
-                    player.sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
+//                    player.sendMessage(BedWars.getInstance().getBedWarsConfig().getString("message.prefix") + " §aEs ist eine neue Version verfügbar §8» §f§l" + BedWars.getInstance().getNewVersion());
+//                    player.sendMessage("§ehttps://www.spigotmc.org/resources/bedwars-bukkit-mit-mapreset-und-stats.68403/");
                 }
             }
             BedWars.getInstance().getStatsHandler().createPlayer(player);
@@ -121,6 +124,9 @@ public class PlayerJoinListener implements Listener {
         }
         if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.cloudNet.v3.enable")) {
             return BukkitCloudNetHelper.getMaxPlayers();
+        }
+        if (BedWars.getInstance().getBedWarsConfig().getBoolean("module.simplecloud.v1.enable")) {
+            return eu.thesimplecloud.api.CloudAPI.getInstance().getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).getMaxPlayers();
         }
         return Bukkit.getMaxPlayers();
     }

@@ -19,6 +19,10 @@ import de.papiertuch.bedwars.stats.MySQL;
 import de.papiertuch.bedwars.stats.StatsAPI;
 import de.papiertuch.bedwars.stats.StatsHandler;
 import de.papiertuch.bedwars.utils.*;
+import eu.thesimplecloud.api.ICloudAPI;
+import eu.thesimplecloud.api.service.ServiceState;
+import eu.thesimplecloud.plugin.startup.CloudPlugin;
+
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -399,14 +403,14 @@ public class BedWars extends JavaPlugin {
             }
             if (gameState == GameState.INGAME) {
                 CloudServer cloudServer = CloudServer.getInstance();
-                cloudServer.setMaxPlayers(getGameHandler().getMaxPlayers() + 50);
+                cloudServer.setMaxPlayers(getGameHandler().getMaxPlayers() + 0);
                 cloudServer.setMotd(getMap());
                 cloudServer.setServerState(ServerState.INGAME);
                 cloudServer.update();
             }
             if (gameState == GameState.ENDING) {
                 CloudServer cloudServer = CloudServer.getInstance();
-                cloudServer.setMaxPlayers(getGameHandler().getMaxPlayers() + 50);
+                cloudServer.setMaxPlayers(getGameHandler().getMaxPlayers() + 0);
                 cloudServer.setMotd(getMap());
                 cloudServer.setServerState(ServerState.OFFLINE);
                 cloudServer.update();
@@ -419,16 +423,33 @@ public class BedWars extends JavaPlugin {
                 BridgeHelper.updateServiceInfo();
             }
             if (gameState == GameState.INGAME) {
-                BukkitCloudNetHelper.setMaxPlayers(getGameHandler().getMaxPlayers() + 50);
+                BukkitCloudNetHelper.setMaxPlayers(getGameHandler().getMaxPlayers() + 0);
                 BukkitCloudNetHelper.setApiMotd(getMap());
                 BukkitCloudNetHelper.setState("INGAME");
                 BridgeHelper.updateServiceInfo();
             }
             if (gameState == GameState.ENDING) {
-                BukkitCloudNetHelper.setMaxPlayers(getGameHandler().getMaxPlayers() + 50);
+                BukkitCloudNetHelper.setMaxPlayers(getGameHandler().getMaxPlayers() + 0);
                 BukkitCloudNetHelper.setApiMotd(getMap());
                 BukkitCloudNetHelper.setState("INGAME");
                 BridgeHelper.updateServiceInfo();
+            }
+        } else if (getBedWarsConfig().getBoolean("module.simplecloud.v1.enable")) {
+        	ICloudAPI simplecloud = eu.thesimplecloud.api.CloudAPI.getInstance();
+            if (gameState == GameState.LOBBY || gameState == GameState.LOADGAME) {
+            	simplecloud.getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).setMaxPlayers(getGameHandler().getMaxPlayers());
+            	setMotd(getMap());
+            	simplecloud.getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).setState(ServiceState.VISIBLE);
+            }
+            if (gameState == GameState.INGAME) {
+            	simplecloud.getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).setMaxPlayers(getGameHandler().getMaxPlayers() + 8);
+            	setMotd(getMap());
+            	simplecloud.getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).setState(ServiceState.INVISIBLE);
+            }
+            if (gameState == GameState.ENDING) {
+            	simplecloud.getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).setMaxPlayers(getGameHandler().getMaxPlayers());
+            	setMotd(getMap());
+            	simplecloud.getCloudServiceManager().getCloudServiceByName(CloudPlugin.getInstance().getThisServiceName()).setState(ServiceState.INVISIBLE);
             }
         } else {
             if (gameState == GameState.LOADGAME) {

@@ -5,6 +5,7 @@ main: de.papiertuch.bedwars.BedWars
 softdepend:
   - CloudNetAPI
   - CloudNet-Bridge
+  - SimpleCloud-Plugin
   - Multiverse-Core
   - NickAddon
 commands:

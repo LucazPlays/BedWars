@@ -96,6 +96,8 @@ public class BedWarsConfig {
         new ConfigInput("module.cloudNet.v2.enable", false);
         new ConfigInput("module.cloudNet.v2.nameTagPattern", "%prefix%");
         new ConfigInput("module.cloudNet.v3.enable", false);
+        new ConfigInput("module.simplecloud.v1.enable", false);
+
 
         List<String> teams = new ArrayList<>();
         teams.add("Blau");
