@@ -66,11 +66,13 @@ public class Game {
 
     }
 
-    private void setGameStuff() {
+    @SuppressWarnings("deprecation")
+	private void setGameStuff() {
         BedWars.getInstance().getScheduler().getLobby().stopWaiting();
         BedWars.getInstance().getScheduler().getLobby().stopCountdown();
         BedWars.getInstance().getGameHandler().sendBroadCast(BedWars.getInstance().getBedWarsConfig().getString("message.roundStarting"));
         BedWars.getInstance().getGameHandler().startSpawner();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "citizens reload");
         for (BedWarsTeam team : BedWars.getInstance().getBedWarsTeams()) {
             if (team.getPlayers().size() == 0) {
                 team.setBed(false);
@@ -83,7 +85,7 @@ public class Game {
             a.playSound(a.getLocation(), BedWars.getInstance().getGameHandler().getSound("ENDERMAN_TELEPORT"), 10F, 10F);
             a.setGameMode(GameMode.SURVIVAL);
             a.showPlayer(a);
-            a.sendTitle("§a", "§7");
+            a.sendTitle("§a§lEloPvP.EU", "§b§lBedWars");
             BedWars.getInstance().getLastHit().clear();
             BedWars.getInstance().getStatsHandler().addPlayedGame(a);
         }
